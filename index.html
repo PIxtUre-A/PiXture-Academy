@@ -1,255 +1,488 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>Physics Academy</title>
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pixture-Academy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-        font-family: Poppins, sans-serif;
-        background: #f5f5f5;
+  :root{
+    --bg:#fbfbfc;
+    --surface:#ffffff;
+    --text:#222326;
+    --muted:#5e636e;
+    --border:#e9eaf0;
+    --accent:#3a7bd5;          /* ฟ้าโทนอุ่น น่าเรียน */
+    --accent-2:#34c3ff;         /* ฟ้าพาสเทลสำหรับไล่สี */
+    --accent-soft:#eef6ff;      /* พื้นอ่อน */
+    --ok:#00b884;
+    --warn:#ffb020;
+    --radius:16px;
+    --shadow: 0 6px 24px rgba(28,47,74,.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1216;
+      --surface:#151a20;
+      --text:#e9edf3;
+      --muted:#a7b0bd;
+      --border:#222a33;
+      --accent:#5aa9ff;
+      --accent-2:#3cd0ff;
+      --accent-soft:#0f1a25;
+      --shadow: 0 8px 28px rgba(0,0,0,.35);
     }
+  }
 
-    .page { display: none; padding: 40px 20px; text-align: center; }
-    .show { display: block; }
+  * { box-sizing: border-box }
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: Inter, Prompt, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans Thai", sans-serif;
+    background: radial-gradient(1200px 600px at 20% -10%, var(--accent-soft) 0%, transparent 60%), var(--bg);
+    color:var(--text);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
 
-    button {
-        margin-top: 20px;
-        padding: 15px 30px;
-        font-size: 18px;
-        border: none;
-        background: #0077cc;
-        color: white;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: 0.25s;
-    }
-    button:hover { transform: scale(1.05); background: #005fa6; }
+  /* Top bar */
+  .nav{
+    position:sticky; top:0; z-index:50;
+    backdrop-filter:saturate(150%) blur(8px);
+    background: color-mix(in oklab, var(--surface) 82%, transparent);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{
+    max-width: 1100px; margin:auto; padding:14px 20px;
+    display:flex; align-items:center; gap:14px; justify-content:space-between;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px; text-decoration:none;
+  }
+  .logo{
+    width:36px; height:36px; border-radius:10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 6px 16px color-mix(in oklab, var(--accent) 40%, transparent);
+  }
+  .brand h1{
+    font: 700 18px/1 Inter, system-ui; letter-spacing:.2px; margin:0;
+    color:var(--text);
+  }
+  .nav-actions{
+    display:flex; align-items:center; gap:10px;
+  }
+  .btn{
+    appearance:none; border:1px solid var(--border); background:var(--surface); color:var(--text);
+    padding:10px 14px; border-radius:12px; cursor:pointer; transition:.2s ease;
+    font:600 14px/1 Inter, system-ui;
+  }
+  .btn:hover{ transform: translateY(-1px); box-shadow: var(--shadow); }
+  .btn.primary{
+    border-color: color-mix(in oklab, var(--accent) 35%, var(--border));
+    background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 12%, var(--surface)) 0%, var(--surface) 100%);
+    color: var(--text);
+  }
 
-    .chapters {
-        margin-top: 40px;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 25px;
-    }
+  /* Layout */
+  .wrap{ max-width:1100px; margin: 28px auto; padding: 0 20px; }
+  .hero{
+    display:grid; gap:22px; padding:36px; border:1px solid var(--border); border-radius: var(--radius);
+    background: linear-gradient(180deg, color-mix(in oklab, var(--accent-soft) 65%, var(--surface)) 0%, var(--surface) 100%);
+    box-shadow: var(--shadow);
+  }
+  .hero h2{ margin:0; font:700 32px/1.2 Inter, system-ui; letter-spacing:.2px }
+  .hero p{ margin:0; color:var(--muted) }
+  .hero-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+  .pill{
+    display:inline-flex; align-items:center; gap:8px; padding:8px 12px;
+    border:1px solid var(--border); border-radius:999px; background:var(--surface); color:var(--muted);
+    font-weight:600; font-size:12px;
+  }
+  .spark{
+    width:8px; height:8px; border-radius:99px; background:var(--ok);
+    box-shadow:0 0 0 4px color-mix(in oklab, var(--ok) 15%, transparent);
+  }
 
-    .card {
-        width: 250px;
-        background: white;
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0px 5px 20px rgba(0,0,0,0.1);
-        cursor: pointer;
-        transition: 0.25s;
-    }
-    .card:hover { transform: translateY(-8px); }
-    .card h3 { color: #0077aa; }
+  /* “Pages” – SPA sections */
+  .page{ display:none; margin-top:18px; }
+  .page.show{ display:block; }
 
-    .tabs {
-        margin-top: 30px;
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-    }
+  /* Chapter grid */
+  .grid{
+    display:grid; gap:16px; grid-template-columns: repeat(3, minmax(0,1fr));
+  }
+  @media (max-width:920px){ .grid{ grid-template-columns: repeat(2, 1fr);} }
+  @media (max-width:620px){ .grid{ grid-template-columns: 1fr;} }
 
-    .tab-btn {
-        padding: 12px 25px;
-        background: #ddd;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: 0.25s;
-    }
-    .tab-btn:hover { background: #ccc; }
-    .active { background: #0077cc !important; color: white; }
+  .card{
+    border:1px solid var(--border); border-radius:16px; background:var(--surface);
+    padding:18px; display:flex; flex-direction:column; gap:8px; transition:.2s ease; position:relative; overflow:hidden;
+  }
+  .card:hover{ transform: translateY(-2px); box-shadow: var(--shadow) }
+  .tag{
+    font:600 11px/1 Inter; letter-spacing:.4px; color:var(--muted);
+    display:inline-flex; gap:8px; align-items:center;
+  }
+  .tag-bullet{ width:7px; height:7px; border-radius:99px; background:var(--accent) }
+  .card-title{ font:700 18px/1.25 Inter; margin:3px 0 2px }
+  .card-desc{ color:var(--muted); margin:0 0 8px }
+  .card .go{
+    align-self:flex-start; margin-top:auto;
+    border:1px solid var(--border); background:var(--surface);
+    padding:10px 12px; border-radius:10px; font-weight:600; cursor:pointer;
+  }
+  .card .go:hover{ border-color: color-mix(in oklab, var(--accent) 45%, var(--border)) }
 
-    .section { display: none; margin-top: 30px; text-align:left; max-width:700px; margin-left:auto; margin-right:auto; }
-    .section h2 { text-align:center; margin-bottom:10px; }
-    .tab-show { display: block; }
+  /* Lesson */
+  .tabs{ display:flex; gap:8px; flex-wrap:wrap; }
+  .tab{
+    border:1px solid var(--border); background:var(--surface); color:var(--muted);
+    padding:10px 14px; border-radius:12px; font:600 14px/1 Inter; cursor:pointer; transition:.18s;
+  }
+  .tab[aria-selected="true"]{
+    color:var(--text);
+    border-color: color-mix(in oklab, var(--accent) 35%, var(--border));
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 25%, transparent);
+  }
+  .panel{ display:none; margin-top:14px; padding:18px; border:1px solid var(--border); border-radius:14px; background:var(--surface) }
+  .panel.show{ display:block }
+  .kbd{
+    font:600 12px/1 Inter; padding:6px 8px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--muted)
+  }
+  .list{ padding-left:18px }
+  .list li{ margin:6px 0 }
+
+  /* Footer */
+  footer{
+    color:var(--muted); font-size:13px; border-top:1px solid var(--border); margin-top:40px;
+  }
+  .foot-inner{ max-width:1100px; margin:auto; padding:18px 20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce){
+    .btn,.card,.tab{ transition:none }
+  }
 </style>
 </head>
-
 <body>
 
-<!-- ✅ หน้าแรก -->
-<div id="home" class="page show">
-    <h1 style="font-size:50px; color:#333;">Physics Academy 🔭</h1>
-    <p style="font-size:20px; margin-top:10px;">รวมบทเรียนฟิสิกส์ เนื้อหา + คลิป + แบบฝึกหัด + เฉลย</p>
-    <button onclick="goPage('chapter')">เลือกบทเรียน</button>
-</div>
+  <!-- NAV -->
+  <nav class="nav" role="navigation" aria-label="หลัก">
+    <div class="nav-inner">
+      <a class="brand" href="#/" aria-label="หน้าแรก Pixture-Academy">
+        <span class="logo" aria-hidden="true"></span>
+        <h1>Pixture-Academy</h1>
+      </a>
+      <div class="nav-actions">
+        <button class="btn" id="btn-theme" title="สลับโหมดแสง">สลับธีม</button>
+        <button class="btn primary" onclick="route('#/chapters')">เลือกบทเรียน</button>
+      </div>
+    </div>
+  </nav>
 
-<!-- ✅ หน้าเลือกบท -->
-<div id="chapter" class="page">
-    <h1 style="color:#333;">เลือกบทเรียนฟิสิกส์</h1>
+  <main class="wrap">
 
-    <div class="chapters">
-        <div class="card" onclick="openLesson(1)">
-            <h3>บทที่ 1</h3>
-            <p>แรงและการเคลื่อนที่</p>
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <div class="pill"><span class="spark"></span> พร้อมเรียนรู้ทุกที่ทุกเวลา</div>
+      <h2>เรียนฟิสิกส์สบายตา<br/>โฟกัสเนื้อหาแบบมินิมอล</h2>
+      <p>รวม <b>เนื้อหา</b> + <b>คลิป</b> + <b>โจทย์</b> + <b>เฉลย</b> ในหน้าเดียว เปลี่ยนแท็บได้ไว ไม่หลุดโฟกัส</p>
+      <div class="hero-actions">
+        <button class="btn primary" onclick="route('#/chapters')">เริ่มเลือกบทเรียน</button>
+        <button class="btn" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">Pixture-Academy คืออะไร</button>
+      </div>
+    </section>
+
+    <section class="page show" id="about" aria-labelledby="about-h">
+      <h3 id="about-h" style="margin:10px 0 6px">เหตุผลที่เหมาะกับการเรียน</h3>
+      <ul class="list">
+        <li>โทนสีสบายตา อ่านนาน ๆ ได้</li>
+        <li>โครงสร้างชัดเจน: หน้าแรก → เลือกบท → เนื้อหา/คลิป/โจทย์/เฉลย</li>
+        <li>ทำงานได้ในไฟล์เดียว เหมาะกับ GitHub Pages</li>
+        <li>บันทึก “บทที่กำลังเรียนล่าสุด” ไว้ในเครื่องคุณ (ไม่ต้องล็อกอิน)</li>
+      </ul>
+    </section>
+
+    <!-- CHAPTERS -->
+    <section class="page" id="chapters" aria-labelledby="chapters-h">
+      <h3 id="chapters-h" style="margin:4px 0 14px">เลือกบทเรียน</h3>
+      <div class="grid" id="chapter-grid">
+        <!-- จะเติมจาก JS -->
+      </div>
+    </section>
+
+    <!-- LESSON -->
+    <section class="page" id="lesson" aria-labelledby="lesson-title">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin:6px 0 10px">
+        <h3 id="lesson-title" style="margin:0">บทเรียน</h3>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <span class="kbd" id="progress-chip" title="บทล่าสุด">ล่าสุด: -</span>
+          <button class="btn" onclick="route('#/chapters')">กลับไปเลือกบท</button>
         </div>
+      </div>
 
-        <div class="card" onclick="openLesson(2)">
-            <h3>บทที่ 2</h3>
-            <p>งานและพลังงาน</p>
-        </div>
+      <div class="tabs" role="tablist" aria-label="แท็บเนื้อหา">
+        <button class="tab" role="tab" aria-selected="true"  aria-controls="panel-content" id="tab-content" onclick="openTab('content')">เนื้อหา</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="panel-video"   id="tab-video"   onclick="openTab('video')">คลิป</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="panel-ex"      id="tab-ex"      onclick="openTab('ex')">โจทย์</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="panel-ans"     id="tab-ans"     onclick="openTab('ans')">เฉลย</button>
+      </div>
 
-        <div class="card" onclick="openLesson(3)">
-            <h3>บทที่ 3</h3>
-            <p>ไฟฟ้า</p>
-        </div>
+      <div id="panel-content" class="panel show" role="tabpanel" aria-labelledby="tab-content"></div>
+      <div id="panel-video"   class="panel"      role="tabpanel" aria-labelledby="tab-video"></div>
+      <div id="panel-ex"      class="panel"      role="tabpanel" aria-labelledby="tab-ex"></div>
+      <div id="panel-ans"     class="panel"      role="tabpanel" aria-labelledby="tab-ans"></div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="foot-inner">
+      <div>© <span id="y"></span> Pixture-Academy · Minimal Learning UI</div>
+      <div style="display:flex; gap:8px">
+        <a class="kbd" href="#/" onclick="route('#/')">หน้าแรก</a>
+        <a class="kbd" href="#/chapters" onclick="route('#/chapters')">บทเรียน</a>
+      </div>
     </div>
-
-    <button onclick="goPage('home')">⬅ กลับหน้าหลัก</button>
-</div>
-
-<!-- ✅ หน้าในบท -->
-<div id="lesson" class="page">
-    <h1 id="lessonTitle">บทเรียน</h1>
-
-    <div class="tabs">
-        <div class="tab-btn active" onclick="showTab('content')">เนื้อหา</div>
-        <div class="tab-btn" onclick="showTab('video')">คลิป</div>
-        <div class="tab-btn" onclick="showTab('ex')">โจทย์</div>
-        <div class="tab-btn" onclick="showTab('ans')">เฉลย</div>
-    </div>
-
-    <!-- ✅ เนื้อหาแต่ละบท -->
-    <div id="content" class="section tab-show">
-        <h2>เนื้อหา</h2>
-        <div id="contentText"></div>
-    </div>
-
-    <!-- ✅ วิดีโอ -->
-    <div id="video" class="section">
-        <h2>คลิปประกอบ</h2>
-        <div id="videoText"></div>
-    </div>
-
-    <!-- ✅ โจทย์ -->
-    <div id="ex" class="section">
-        <h2>โจทย์</h2>
-        <div id="exText"></div>
-    </div>
-
-    <!-- ✅ เฉลย -->
-    <div id="ans" class="section">
-        <h2>เฉลย</h2>
-        <div id="ansText"></div>
-    </div>
-
-    <button onclick="goPage('chapter')">⬅ กลับไปเลือกบท</button>
-</div>
+  </footer>
 
 <script>
-/* ✅ ข้อมูลเนื้อหาฟิสิกส์แต่ละบท */
-const lessons = {
-    1: {
-        title: "แรงและการเคลื่อนที่",
-        content: `
-        ✅ **แรง (Force)** คือปริมาณที่ทำให้วัตถุเปลี่ยนความเร็ว  
-        ✅ หน่วย: นิวตัน (N)  
-        ✅ กฎการเคลื่อนที่ของนิวตัน  
-        1) วัตถุอยู่นิ่งจะนิ่งต่อไป  
-        2) F = ma  
-        3) ทุกแรงมีแรงคู่ควบ  
-        `,
-        video: `
-        ✅ คลิปแนะนำบทนี้  
-        <br><br>
-        <iframe width="100%" height="315" src="https://www.youtube.com/embed/IXyK31JHk_Y" frameborder="0"></iframe>
-        `,
-        ex: `
-        1) แรงลัพธ์คืออะไร?  
-        2) ถ้ามวล 2 kg ถูกดึงด้วยแรง 10 N คำนวณความเร่ง  
-        3) สรุปกฎนิวตันทั้ง 3 ข้อ
-        `,
-        ans: `
-        ✅ ข้อ 1: แรงรวมของแรงทุกแรงที่กระทำต่อวัตถุ  
-        ✅ ข้อ 2: a = F/m = 10/2 = 5 m/s²  
-        ✅ ข้อ 3: (ตอบตามเนื้อหาด้านบน)
-        `
-    },
+/* ====== เนื้อหาบทเรียน (เหมือนเดิมแต่จัดรูปแบบให้อ่านง่าย) ====== */
+const LESSONS = [
+  {
+    id:1,
+    title:"บทที่ 1 · แรงและการเคลื่อนที่",
+    short:"แรงลัพธ์ กฎการเคลื่อนที่ของนิวตัน การเร่ง",
+    color:"linear-gradient(180deg, #e7f1ff, #ffffff)",
+    content: `
+      <h4>สรุปเนื้อหา</h4>
+      <ul class="list">
+        <li><b>แรง (Force)</b> คือปริมาณที่ทำให้วัตถุเปลี่ยนความเร็ว หน่วย: นิวตัน (N)</li>
+        <li><b>แรงลัพธ์</b> คือผลรวมเวกเตอร์ของแรงทั้งหมดที่กระทำต่อวัตถุ</li>
+        <li><b>กฎของนิวตัน</b>
+          <ul class="list">
+            <li>ข้อ 1: วัตถุอยู่นิ่งจะนิ่งต่อไป / เคลื่อนที่จะคงความเร็วคงตัว เว้นแต่มีแรงลัพธ์มากระทำ</li>
+            <li>ข้อ 2: <b>F = ma</b> (แรงแปรผันตรงกับความเร่ง เมื่อมวลคงที่)</li>
+            <li>ข้อ 3: แรงกิริยา–แรงปฏิกิริยา มีค่าเท่ากัน ทิศตรงข้าม กระทำต่างวัตถุ</li>
+          </ul>
+        </li>
+      </ul>
+    `,
+    video: `
+      <p>คลิปแนะนำบทนี้</p>
+      <div style="aspect-ratio:16/9; max-width:740px; margin:auto; border-radius:12px; overflow:hidden; border:1px solid var(--border)">
+        <iframe
+          width="100%" height="100%"
+          src="https://www.youtube.com/embed/IXyK31JHk_Y"
+          title="Newton's Laws"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    `,
+    ex: `
+      <ol class="list">
+        <li>นิยาม “แรงลัพธ์” คืออะไร?</li>
+        <li>มวล 2 kg ถูกดึงด้วยแรง 10 N จงหาความเร่ง</li>
+        <li>สรุปสาระของกฎนิวตันทั้ง 3 ข้อแบบสั้น ๆ</li>
+      </ol>
+    `,
+    ans: `
+      <ul class="list">
+        <li><b>แรงลัพธ์</b> = เวกเตอร์ผลรวมของแรงทั้งหมดที่กระทำบนวัตถุ</li>
+        <li><b>a = F/m = 10/2 = 5 m/s²</b></li>
+        <li>ข้อ 1: เฉื่อย · ข้อ 2: F=ma · ข้อ 3: กิริยา–ปฏิกิริยา เท่ากัน–ตรงข้าม</li>
+      </ul>
+    `
+  },
+  {
+    id:2,
+    title:"บทที่ 2 · งานและพลังงาน",
+    short:"งาน พลังงานจลน์–ศักย์ อนุรักษ์พลังงาน",
+    color:"linear-gradient(180deg, #e9fff6, #ffffff)",
+    content: `
+      <h4>สรุปเนื้อหา</h4>
+      <ul class="list">
+        <li><b>งาน (W)</b> = F·d (ทิศเดียวกัน) หน่วยจูล (J)</li>
+        <li><b>พลังงานศักย์</b> (mgh) และ <b>พลังงานจลน์</b> (½mv²)</li>
+        <li><b>อนุรักษ์พลังงาน:</b> พลังงานรวมคงที่ (ถ้าไม่มีสูญเสีย)</li>
+      </ul>
+    `,
+    video: `
+      <p>คลิปงานและพลังงาน</p>
+      <div style="aspect-ratio:16/9; max-width:740px; margin:auto; border-radius:12px; overflow:hidden; border:1px solid var(--border)">
+        <iframe
+          width="100%" height="100%"
+          src="https://www.youtube.com/embed/6qXQJDh1LZw"
+          title="Work & Energy"
+          frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    `,
+    ex: `
+      <ol class="list">
+        <li>คำนวณงานเมื่อแรง 20 N กระทำระยะ 5 m</li>
+        <li>มวล 3 kg ตกจากสูง 2 m จงหาพลังงานศักย์เริ่มต้น</li>
+      </ol>
+    `,
+    ans: `
+      <ul class="list">
+        <li>W = Fd = 20 × 5 = <b>100 J</b></li>
+        <li>PE = mgh = 3 × 9.8 × 2 = <b>58.8 J</b></li>
+      </ul>
+    `
+  },
+  {
+    id:3,
+    title:"บทที่ 3 · ไฟฟ้า",
+    short:"ประจุ กระแส ความต้านทาน กฎของโอห์ม",
+    color:"linear-gradient(180deg, #f9f2ff, #ffffff)",
+    content: `
+      <h4>สรุปเนื้อหา</h4>
+      <ul class="list">
+        <li><b>ประจุไฟฟ้า (Q)</b> หน่วยคูลอมบ์</li>
+        <li><b>กระแสไฟฟ้า</b> I = Q/t</li>
+        <li><b>กฎของโอห์ม</b> V = IR และ R = V/I</li>
+      </ul>
+    `,
+    video: `
+      <p>คลิปไฟฟ้าเบื้องต้น</p>
+      <div style="aspect-ratio:16/9; max-width:740px; margin:auto; border-radius:12px; overflow:hidden; border:1px solid var(--border)">
+        <iframe
+          width="100%" height="100%"
+          src="https://www.youtube.com/embed/FU3JkIuqCaU"
+          title="Basic Electricity"
+          frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    `,
+    ex: `
+      <ol class="list">
+        <li>ถ้า V = 12V และ R = 4Ω จงหาค่า I</li>
+        <li>แบต 6V ต่อหลอด 3Ω กระแสเท่าไร (บ่งชี้ความสว่าง)</li>
+      </ol>
+    `,
+    ans: `
+      <ul class="list">
+        <li>I = V/R = 12/4 = <b>3 A</b></li>
+        <li>I = 6/3 = <b>2 A</b> (สว่างมากขึ้น)</li>
+      </ul>
+    `
+  }
+];
 
-    2: {
-        title: "งานและพลังงาน",
-        content: `
-        ✅ งาน (W) = F × d  
-        ✅ พลังงานศักย์ = mgh  
-        ✅ พลังงานจลน์ = 1/2 mv²  
-        ✅ หลักการอนุรักษ์พลังงาน: พลังงานรวมคงที่
-        `,
-        video: `
-        ✅ คลิปงานและพลังงาน  
-        <br><br>
-        <iframe width="100%" height="315" src="https://www.youtube.com/embed/6qXQJDh1LZw" frameborder="0"></iframe>
-        `,
-        ex: `
-        1) คำนวณงานเมื่อแรง 20 N กระทำระยะ 5 m  
-        2) มวล 3 kg ตกจากสูง 2 m จงหาพลังงานศักย์  
-        `,
-        ans: `
-        ✅ 1) W = Fd = 20 × 5 = 100 J  
-        ✅ 2) PE = mgh = 3 × 9.8 × 2 = 58.8 J
-        `
-    },
-
-    3: {
-        title: "ไฟฟ้า",
-        content: `
-        ✅ ประจุไฟฟ้า (Q) หน่วย: คูลอมบ์  
-        ✅ กระแสไฟฟ้า I = Q/t  
-        ✅ ความต้านทาน R = V / I  
-        ✅ กฎของโอห์ม: V = IR
-        `,
-        video: `
-        ✅ คลิปไฟฟ้าเบื้องต้น  
-        <br><br>
-        <iframe width="100%" height="315" src="https://www.youtube.com/embed/FU3JkIuqCaU" frameborder="0"></iframe>
-        `,
-        ex: `
-        1) ถ้า V = 12V และ R = 4Ω หาค่า I  
-        2) แบต 6V ต่อหลอด 3Ω ความสว่างจะเป็นอย่างไร?  
-        `,
-        ans: `
-        ✅ 1) I = V/R = 12/4 = 3A  
-        ✅ 2) I = 6/3 = 2A (สว่างมาก)
-        `
-    }
-};
-
-/* ====================================================== */
-/* ✅ ระบบสลับหน้า */
-function goPage(page) {
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("show"));
-    document.getElementById(page).classList.add("show");
+/* ====== เติมการ์ดบทเรียนแบบมินิมอล ====== */
+function renderChapters(){
+  const grid = document.getElementById('chapter-grid');
+  grid.innerHTML = '';
+  LESSONS.forEach(({id,title,short,color})=>{
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.style.background = `linear-gradient(180deg, transparent 0%, transparent 55%), ${color}`;
+    card.innerHTML = `
+      <span class="tag"><span class="tag-bullet"></span>บทเรียน</span>
+      <h4 class="card-title">${title}</h4>
+      <p class="card-desc">${short}</p>
+      <button class="go" aria-label="เริ่มเรียน ${title}">เริ่มเรียน</button>
+    `;
+    card.querySelector('.go').addEventListener('click', ()=> openLesson(id));
+    card.addEventListener('click', (e)=>{ if(e.target.classList.contains('go')) return; openLesson(id); });
+    grid.appendChild(card);
+  });
 }
 
-/* ✅ เปิดบทเรียน */
-function openLesson(num) {
-    const d = lessons[num];
-    document.getElementById("lessonTitle").innerText = d.title;
-    document.getElementById("contentText").innerHTML = d.content;
-    document.getElementById("videoText").innerHTML = d.video;
-    document.getElementById("exText").innerHTML = d.ex;
-    document.getElementById("ansText").innerHTML = d.ans;
-
-    goPage("lesson");
+/* ====== เปิดบท & เติมเนื้อหาไปยังแท็บ ====== */
+function openLesson(id){
+  const L = LESSONS.find(x=>x.id===id);
+  if(!L) return;
+  // บันทึกความคืบหน้าไว้ในเครื่อง
+  localStorage.setItem('pixture:lastChapter', String(id));
+  // อัปเดตหัวข้อ + แท็บ
+  document.getElementById('lesson-title').textContent = L.title;
+  document.getElementById('panel-content').innerHTML = L.content;
+  document.getElementById('panel-video').innerHTML   = L.video;
+  document.getElementById('panel-ex').innerHTML      = L.ex;
+  document.getElementById('panel-ans').innerHTML     = L.ans;
+  // เปิดหน้า lesson และเลือกแท็บ “เนื้อหา”
+  openTab('content');
+  showPage('lesson');
+  updateProgressChip();
 }
 
-/* ✅ สลับแท็บ */
-function showTab(tab) {
-    document.querySelectorAll(".section").forEach(s => s.classList.remove("tab-show"));
-    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-
-    document.getElementById(tab).classList.add("tab-show");
-    event.target.classList.add("active");
+/* ====== แท็บ ====== */
+function openTab(name){
+  const map = {
+    content:'panel-content',
+    video:'panel-video',
+    ex:'panel-ex',
+    ans:'panel-ans'
+  };
+  // panels
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
+  document.getElementById(map[name]).classList.add('show');
+  // tabs
+  document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected','false'));
+  document.getElementById('tab-'+name).setAttribute('aria-selected','true');
 }
+
+/* ====== SPA Routing (hash) #/, #/chapters, #/lesson ====== */
+function route(hash){
+  if(hash) location.hash = hash;
+  const h = (location.hash || '#/').replace('#','');
+  if(h.startsWith('/chapters')) showPage('chapters');
+  else if(h.startsWith('/lesson')) showPage('lesson');
+  else showPage('home');
+}
+function showPage(id){
+  // หน้า hero (home) ไม่ได้ใช้คลาส .page
+  document.getElementById('home').classList.toggle('show', id==='home');
+  ['chapters','lesson','about'].forEach(pid=>{
+    const el = document.getElementById(pid);
+    el.classList.toggle('show', pid===id || (pid==='about' && id==='home'));
+  });
+  // โฟกัส heading
+  const pageEl = id==='home' ? document.querySelector('.hero h2') : document.querySelector(`#${id} h3, #${id} h1`);
+  if(pageEl) pageEl.setAttribute('tabindex','-1'), pageEl.focus({preventScroll:true});
+}
+
+/* ====== Theme toggle (light/dark เท่าที่เครื่องรองรับ) ====== */
+document.getElementById('btn-theme').addEventListener('click', ()=>{
+  const cur = document.documentElement.getAttribute('data-theme') || 'auto';
+  const next = cur==='dark' ? 'light' : cur==='light' ? 'auto' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  // ใช้ attribute เป็นสวิตช์เล็ก ๆ
+  if(next==='dark'){
+    document.documentElement.style.colorScheme = 'dark';
+  }else if(next==='light'){
+    document.documentElement.style.colorScheme = 'light';
+  }else{
+    document.documentElement.style.colorScheme = 'normal';
+  }
+});
+
+/* ====== แสดง “บทล่าสุด” ในชิปเล็ก ๆ ====== */
+function updateProgressChip(){
+  const id = Number(localStorage.getItem('pixture:lastChapter'));
+  const chip = document.getElementById('progress-chip');
+  const L = LESSONS.find(x=>x.id===id);
+  chip.textContent = 'ล่าสุด: ' + (L ? L.title : '-');
+}
+
+/* ====== Init ====== */
+(function init(){
+  document.getElementById('y').textContent = new Date().getFullYear();
+  renderChapters();
+  updateProgressChip();
+  addEventListener('hashchange', ()=>route());
+  route(); // ดึงเส้นทางปัจจุบัน
+})();
 </script>
+</body>
+</html>
+
 
 </body>
 </html>
+
